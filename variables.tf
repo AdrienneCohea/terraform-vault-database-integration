@@ -44,7 +44,6 @@ variable "mongodb_roles" {
   type        = map(list(object({ db = string, role = string })))
   description = "Database access roles as they should be defined in Vault, given as a map from strings to objects having database names and role names in MongoDB."
   default     = null
-
 }
 
 variable "postgresql_connection_url" {
@@ -54,7 +53,12 @@ variable "postgresql_connection_url" {
 }
 
 variable "postgresql_roles" {
-  type        = any
+  type = map(object({
+    grants  = list(string),
+    schemas = optional(list(string)),
+    tables  = optional(list(string))
+  }))
+
   description = "Database access roles as they should be defined in Vault, given as a map from strings to objects having database names and role names in PostgreSQL."
-  default     = []
+  default     = null
 }
