@@ -14,7 +14,10 @@ resource "vault_database_secret_backend_role" "postgresql" {
   name     = each.key
   db_name  = vault_database_secret_backend_connection.postgresql.name
 
-  creation_statements = []
+  creation_statements = [
+    "CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';",
+    format("GRANT INSERT, SELECT, UPDATE, DELETE ON ALL TABLES IN SCHEMA %s TO \"{{name}}\";", var.schema)
+  ]
 
   depends_on = [vault_database_secret_backend_connection.postgresql]
 }
